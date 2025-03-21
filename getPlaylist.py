@@ -15,7 +15,7 @@ response = requests.request("GET", url, headers=headers, data=payload)
 response = response.json()
 
 playlist_details = [
-    {"Playlist_Name": item["name"], "playlist_ID": item["owner"]["id"]}
+    {"Playlist_Name": item["name"], "playlist_ID": item["id"]}
     for item in response["items"]
 ]
 
