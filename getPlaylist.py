@@ -15,11 +15,10 @@ response = requests.request("GET", url, headers=headers, data=payload)
 response = response.json()
 
 playlist_details = [
-    {"Playlist_Name": item["name"], "playlist_ID": item["id"]}
+    {"Playlist_Name": item["name"], "Playlist_ID": item["id"]}
     for item in response["items"]
 ]
 
 df = pd.DataFrame(playlist_details)
 
 df.to_csv("playlists.csv", index=False)
-print(playlist_details)

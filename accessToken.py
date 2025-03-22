@@ -25,6 +25,3 @@ def getAccessToken():
 
     response = response.json()
     return response.get('access_token')
-
-
-getAccessToken()
