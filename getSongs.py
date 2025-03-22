@@ -1,5 +1,4 @@
 from accessToken import getAccessToken
-from generateSongList import getPlaylistData
 import requests
 import pandas as pd
 
