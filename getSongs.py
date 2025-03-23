@@ -10,7 +10,9 @@ song_details = []
 global_index = 1
 
 
-def getPlaylistData(url, ind):
+def getPlaylistData(url):
+    # display fetching url
+    print(f"Fetching: {url}")
     global global_index
     payload = {}
     headers = {
@@ -18,6 +20,9 @@ def getPlaylistData(url, ind):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
+
+    # print status code
+    print(f"response code: {response.status_code}")
     response = response.json()
 
     for item in response['items']:
@@ -35,7 +40,7 @@ def getPlaylistData(url, ind):
     next = response.get('next')
 
     if next:
-        getPlaylistData(next, ind)
+        getPlaylistData(next)
 
     global_index = 1
     return pd.DataFrame(song_details)
@@ -47,7 +52,7 @@ for index, (i, row) in enumerate(playlist_data.iterrows()):
 
     url = f"https://api.spotify.com/v1/playlists/{playlist_ID}/tracks"
 
-    df = getPlaylistData(url, index)
+    df = getPlaylistData(url)
 
     song_details = []
-    df.to_csv(f"{playlist_Name}.csv", index=False)
+    df.to_csv(f"./playlists/{playlist_Name}.csv", index=False)
