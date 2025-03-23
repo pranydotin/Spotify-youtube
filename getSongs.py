@@ -1,8 +1,8 @@
-from accessToken import getAccessToken
+from accessToken import getSpotifyAccessToken
 import requests
 import pandas as pd
 
-access_token = getAccessToken()
+access_token = getSpotifyAccessToken()
 
 playlist_data = pd.read_csv("./playlists.csv")
 
@@ -10,10 +10,10 @@ song_details = []
 global_index = 1
 
 
-def getPlaylistData(url):
+def getPlaylistData(url, song_details=[], global_index=1):
     # display fetching url
     print(f"Fetching: {url}")
-    global global_index
+    # global global_index
     payload = {}
     headers = {
         'Authorization': f'Bearer {access_token}'
@@ -40,19 +40,7 @@ def getPlaylistData(url):
     next = response.get('next')
 
     if next:
-        getPlaylistData(next)
+        getPlaylistData(next, song_details, global_index)
 
     global_index = 1
     return pd.DataFrame(song_details)
-
-
-for index, (i, row) in enumerate(playlist_data.iterrows()):
-    playlist_ID = row['Playlist_ID']
-    playlist_Name = row['Playlist_Name']
-
-    url = f"https://api.spotify.com/v1/playlists/{playlist_ID}/tracks"
-
-    df = getPlaylistData(url)
-
-    song_details = []
-    df.to_csv(f"./playlists/{playlist_Name}.csv", index=False)
