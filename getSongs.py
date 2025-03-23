@@ -4,11 +4,6 @@ import pandas as pd
 
 access_token = getSpotifyAccessToken()
 
-playlist_data = pd.read_csv("./playlists.csv")
-
-song_details = []
-global_index = 1
-
 
 def getPlaylistData(url, song_details=[], global_index=1):
     # display fetching url
