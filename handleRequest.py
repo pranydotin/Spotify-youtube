@@ -44,6 +44,7 @@ def searchSong(song):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
+    print(response.text)
     response = response.json()
     return response['items'][0]['id']['videoId']
 
@@ -67,6 +68,6 @@ def insertToPlaylist(playlist, video):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    print(response)
+    print(response.text())
     if response.status_code == 200:
         print(f"{video} inserted")

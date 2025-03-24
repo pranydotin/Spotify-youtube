@@ -1,12 +1,18 @@
 import requests
 import json
 from accessToken import getYoutubeAccessToken
+from accessToken import generateYoutubeAccessToken
 
 
 def createPlaylist(name):
-    url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet,status"
     access = getYoutubeAccessToken()
+    return sentRequest(name, access)
 
+# print(createPlaylist("pranay"))
+
+
+def sentRequest(name, access):
+    url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet,status"
     payload = json.dumps({
         "snippet": {
             "title": f"{name}",
@@ -29,9 +35,11 @@ def createPlaylist(name):
     response = requests.request("POST", url, headers=headers, data=payload)
     if response.status_code == 200:
         print("Playist created")
+        # print(response.text)
         response = response.json()
-
         return response['id']
 
-
-# print(createPlaylist("pranay"))
+    elif response.status_code == 401:
+        access = generateYoutubeAccessToken()
+        print("d")
+        return sentRequest(name, access)

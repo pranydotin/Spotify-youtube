@@ -1,14 +1,11 @@
-from accessToken import getSpotifyAccessToken
 import requests
 import pandas as pd
 
-access_token = getSpotifyAccessToken()
 
-
-def getPlaylistData(url, song_details=[], global_index=1):
+def getPlaylistData(access_token, url, song_details=[], global_index=1, playlist_name=''):
     # display fetching url
     print(f"Fetching: {url}")
-    # global global_index
+
     payload = {}
     headers = {
         'Authorization': f'Bearer {access_token}'
@@ -23,10 +20,11 @@ def getPlaylistData(url, song_details=[], global_index=1):
     for item in response['items']:
         song_details.extend([
             {
-                "index": global_index,
+                "index_in-playlist": global_index,
                 "Song_Name": item['track']['name'],
                 "Album": item['track']['album']['name'],
-                "artist_names": ", ".join(artist['name']for artist in item['track']['artists'])
+                "artist_names": ", ".join(artist['name']for artist in item['track']['artists']),
+                "playlist_name": playlist_name
             }
 
         ])
@@ -35,7 +33,9 @@ def getPlaylistData(url, song_details=[], global_index=1):
     next = response.get('next')
 
     if next:
-        getPlaylistData(next, song_details, global_index)
+        getPlaylistData(access_token, next, song_details,
+                        global_index, playlist_name)
 
     global_index = 1
+    # print(song_details)
     return pd.DataFrame(song_details)

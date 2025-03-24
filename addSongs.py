@@ -1,22 +1,27 @@
-from accessToken import getYoutubeAccessToken
 import pandas as pd
-from handleRequest import createPlaylist
-from handleRequest import searchSong
-from handleRequest import insertToPlaylist
+from createPlaylist import createPlaylist
 
-data = pd.ExcelFile("./playlists/playlists.xlsx")
-# print(data.sheet_names)
-# for sheet in
+data = pd.read_excel("./playlists/playlists.xlsx")
 
-for sheet in data.sheet_names:
-    df = data.parse(sheet)
-    df = df.head(1)
 
-    play_id = createPlaylist(sheet)
-    for i, row in df.iterrows():
-        print(i)
-        search = f"{row.Song_Name} {row.artist_names}"
-        video_id = searchSong(search)
-        print(video_id)
-        print(play_id)
-        insertToPlaylist(play_id, video_id)
+def sentRequestForCreatePlaylist():
+
+    playlist_name = pd.unique(data.playlist_name)
+
+    play_id = []
+
+    output_file = "./playlists/playlists.xlsx"
+
+    for playlist in playlist_name:
+        youtubePlaylist_id = createPlaylist(playlist)
+        play_id.append(youtubePlaylist_id)
+
+    playlist_mapping = {name: idx for name,
+                        idx in zip(playlist_name, play_id)}
+
+    data["playlist_index"] = data["playlist_name"].map(playlist_mapping)
+    with pd.ExcelWriter(output_file, engine="xlsxwriter") as writer:
+        data.to_excel(writer, index=False)
+
+
+# sentRequestForCreatePlaylist()
