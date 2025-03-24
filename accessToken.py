@@ -4,6 +4,11 @@ import pandas as pd
 
 
 def getSpotifyAccessToken():
+    data = pd.read_json("./details.json")
+    return data.spotify.get("access_token")
+
+
+def generateSpotifyAccessToken():
     # get the details
     data = pd.read_json("./details.json")
     refresh = data.spotify.refresh_token
@@ -24,11 +29,18 @@ def getSpotifyAccessToken():
     response = requests.request("POST", url, headers=headers, data=payload)
 
     response = response.json()
+    data.loc["access_token", 'spotify'] = response.get('access_token')
+    data.to_json("details.json", indent=4)
+
     return response.get('access_token')
 
 
 def getYoutubeAccessToken():
+    data = pd.read_json("./details.json")
+    return data.youtube.get("access_token")
 
+
+def generateYoutubeAccessToken():
     data = pd.read_json("./details.json")
     refresh = data.youtube.refresh_token
     client_id = data.youtube.client_id
@@ -44,4 +56,12 @@ def getYoutubeAccessToken():
 
     response = requests.request("POST", url, headers=headers, data=payload)
     response = response.json()
+    data.loc["access_token", 'youtube'] = response.get('access_token')
+    data.to_json("details.json", indent=4)
     return response.get('access_token')
+
+
+# a = generateSpotifyAccessToken()
+# print(a)
+# a = getYoutubeAccessToken()
+# print(a)
