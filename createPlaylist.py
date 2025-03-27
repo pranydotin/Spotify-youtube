@@ -8,8 +8,6 @@ def createPlaylist(name):
     access = getYoutubeAccessToken()
     return sentRequest(name, access)
 
-# print(createPlaylist("pranay"))
-
 
 def sentRequest(name, access):
     url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet,status"
